@@ -1,0 +1,9 @@
+.element-item__like-section {
+  padding: 0;
+  margin: 0;
+  width: 22px;
+  height: 35px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

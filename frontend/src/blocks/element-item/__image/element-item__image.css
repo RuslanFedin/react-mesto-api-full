@@ -1,0 +1,17 @@
+.element-item__image {
+  margin: 0%;
+  display: block;
+  position: relative;
+  width: 282px;
+  height: 282px;
+  border-radius: 10px 10px 0 0;
+  transition: filter 0.6s;
+  cursor: pointer;
+  object-fit: cover;
+  background-position: center;
+  background-size: cover;
+}
+
+.element-item__image:hover {
+  filter: brightness(0.6);
+}

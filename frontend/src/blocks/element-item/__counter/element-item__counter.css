@@ -1,0 +1,10 @@
+.element-item__counter {
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+  font-family: 'Inter', Arial, sans-serif;
+  color: #000;
+  font-size: 13px;
+  line-height: 1;
+}
+

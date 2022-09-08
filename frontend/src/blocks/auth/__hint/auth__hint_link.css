@@ -1,0 +1,9 @@
+.auth__hint_link {
+  text-decoration: none;
+  color: #fff;
+  transition: opacity .6s;
+}
+
+.auth__hint_link:hover {
+  opacity: .6;
+}

@@ -1,0 +1,10 @@
+.popup__message {
+  align-self: center;
+  width: 358px;
+  margin: 0;
+  margin-bottom: 60px;
+  text-align: center;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 900;
+}
