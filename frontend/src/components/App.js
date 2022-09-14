@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Login from './Login';
 import Register from './Register';
@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     checkToken()
-  }, []);
+  }, [checkToken]);
 
   useEffect(() => {
     if (loggedIn) {
@@ -137,7 +137,7 @@ function App() {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Вы успешно зарегестрировались!');
         setImage(union);
-        history.push('/sign-in');
+        history.push('/signin');
       } else {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Что-то пошло не так! Попробуйте еще раз.');
@@ -152,7 +152,7 @@ function App() {
   function handleSignOut() {
     localStorage.removeItem('token');
     setEmail('');
-    history.push('/sign-in');
+    history.push('/signin');
     setLoggedIn(false);
   }
 
@@ -183,12 +183,12 @@ function App() {
           onSignOut = {handleSignOut}
         />
         <Switch>
-          <Route exact={true} path="/sign-up">
+          <Route exact={true} path="/signup">
             <Register
               onRegister={onRegister}
             />
           </Route>
-          <Route exact={true} path="/sign-in">
+          <Route exact={true} path="/signin">
             <Login
               onLogin={onLogin}
             />

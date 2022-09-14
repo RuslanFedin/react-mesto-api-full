@@ -20,15 +20,15 @@ function Header({ email, onSignOut }) {
               onClick={onSignOut}>Выйти</Link>
           </Route>
 
-          <Route exact={true} path="/sign-in">
+          <Route exact={true} path="/signin">
             <Link
-              to='/sign-up'
+              to='/signup'
               className="header__link">Регистрация</Link>
           </Route>
 
-          <Route exact={true} path="/sign-up">
+          <Route exact={true} path="/signup">
             <Link
-              to='/sign-in'
+              to='/signin'
               className="header__link">Войти</Link>
           </Route>
 

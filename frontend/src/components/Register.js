@@ -45,7 +45,7 @@ const Register = ({ onRegister }) => {
           type="submit"
         >Зарегистрироваться</button>
         <p className="auth__hint">Уже зарегистрированы?
-          <Link className="auth__hint_link" to="/sign-in"> Войти</Link>
+          <Link className="auth__hint_link" to="/signin"> Войти</Link>
         </p>
       </form>
     </div>

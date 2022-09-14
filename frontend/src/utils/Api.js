@@ -1,5 +1,7 @@
 import { data } from "autoprefixer";
 
+const token = localStorage.getItem('token');
+
 class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
@@ -99,9 +101,9 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-42',
+  baseUrl: 'https://mestobknd.nomoredomains.sbs',
   headers: {
-    authorization: '7b11d0b8-523b-4f37-90de-4f1e8f1ef0ac',
+    authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
 }
 });

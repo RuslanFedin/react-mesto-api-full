@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "cors": "^2.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.2.1",
@@ -18,8 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages - d build"
+    "deploy": "gh-pages -d build && npm run build && scp -r ./build/* fedin_ra@51.250.9.9:/home/fedin_ra/react-mesto-api-full/frontend"
   },
   "eslintConfig": {
     "extends": [
