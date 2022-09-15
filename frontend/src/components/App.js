@@ -134,6 +134,7 @@ function App() {
     auth.register(email, password)
     .then((res) => {
       if (res) {
+        console.log(res);
         setIsInfoTooltipPopupOpen(true);
         setMessage('Вы успешно зарегестрировались!');
         setImage(union);
@@ -156,6 +157,7 @@ function App() {
     setLoggedIn(false);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function checkToken() {
     if (localStorage.getItem('token')) {
       const token = localStorage.getItem('token');
