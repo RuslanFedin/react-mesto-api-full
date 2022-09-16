@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cors = require('./middlewares/cors');
-// const cors = require('cors');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
@@ -16,21 +15,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-// const options = {
-//   origin: [
-//     'http://localhost:3000',
-//     'http://mestofrnd.nomoredomains.sbs',
-//     'http://mestobknd.nomoredomains.sbs',
-//     'https://ruslanfedin.github.io',
-//   ],
-//   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-//   preflightContinue: false,
-//   optionsSuccessStatus: 204,
-//   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-//   credentials: true,
-// };
-
-// app.use('*', cors(options));
 app.use(cors);
 
 app.use(bodyParser.json());

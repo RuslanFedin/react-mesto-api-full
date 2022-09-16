@@ -32,20 +32,20 @@ function App() {
 
   useEffect(() => {
     checkToken()
-  }, [checkToken]);
+  }, []);
 
   useEffect(() => {
     if (loggedIn) {
-      api.getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch((error) => {
-        console.log(`ERROR: ${error}`);
-      });
+
       api.getCards()
       .then((cardData) => {
-        setCards(cardData.map((card) =>({...card, key: card._id})));
+        setCards(cardData.map((card) =>({
+          _id: card._id,
+          link: card.link,
+          name: card.name,
+          likes: card.likes,
+          owner: card.owner,
+        })));
       })
       .catch((error) => {
         console.log(`ERROR: ${error}`);
@@ -74,8 +74,8 @@ function App() {
 
   function handleUpdateAvatar(link) {
     api.editUserAvatar(link)
-      .then((link) => {
-        setCurrentUser(link)
+      .then(({user}) => {
+        setCurrentUser(user)
         closeAllPopups(setIsEditAvatarPopupOpen)
       })
       .catch((error) => {
@@ -86,7 +86,7 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api.changeCardLike(card._id, !isLiked)
-    .then((newCard) => {
+    .then(({card: newCard}) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
     })
     .catch((error) => {
@@ -115,7 +115,7 @@ function App() {
       });
   }
 
-  function onLogin({email, password}) {
+  function onLogin(email, password) {
     auth.authorize(email, password)
     .then((res) => {
       if (res.token) {
@@ -130,7 +130,7 @@ function App() {
     })
   }
 
-  function onRegister({email, password}) {
+  function onRegister(email, password) {
     auth.register(email, password)
     .then((res) => {
       if (res) {
@@ -138,7 +138,8 @@ function App() {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Вы успешно зарегестрировались!');
         setImage(union);
-        history.push('/signin');
+        // history.push('/signin');
+        onLogin(email, password);
       } else {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Что-то пошло не так! Попробуйте еще раз.');
@@ -157,23 +158,24 @@ function App() {
     setLoggedIn(false);
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function checkToken() {
-    if (localStorage.getItem('token')) {
-      const token = localStorage.getItem('token');
-      auth.getContent(token)
-      .then((res) => {
-        if (res) {
-          const email = res.data.email
-          setLoggedIn(true);
-          setEmail(email);
-        }
-        history.push('/')
-      })
-      .catch ((error) => {
-        console.log(`ERROR: ${error}`);
-      })
-    }
+    const token = localStorage.getItem('token');
+
+    if (token || !loggedIn) return;
+
+    auth.getContent(token)
+    .then((res) => {
+      if (res) {
+        const email = res.user.email
+        setCurrentUser(res.user);
+        setLoggedIn(true);
+        setEmail(email);
+      }
+      history.push('/')
+    })
+    .catch ((error) => {
+      console.log(`ERROR: ${error}`);
+    })
   }
 
   return (
