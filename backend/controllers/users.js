@@ -5,7 +5,6 @@ const User = require('../models/user');
 const NotFound = require('../errors/NotFound');
 const Conflict = require('../errors/Conflict');
 const BadRequest = require('../errors/BadRequest');
-pro
 const { HAS_BEEN_CREATED } = require('../errors/statusCodes');
 
 module.exports.login = (req, res, next) => {
