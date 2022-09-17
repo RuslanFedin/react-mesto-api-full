@@ -1,7 +1,6 @@
 export const BASE_URL = 'http://mestobknd.nomoredomains.sbs';
 
 export const register = (email, password) => {
-  console.log(email, password);
   return fetch (`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
@@ -31,11 +30,13 @@ export const authorize = (email, password) => {
     credentials: 'include',
     body: JSON.stringify({email, password})
   })
+
   .then((res) => {
     if (res.status === 200) {
       return res.json();
     }
   })
+
 };
 
 export const getContent = (token) => {

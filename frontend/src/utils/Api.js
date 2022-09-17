@@ -96,8 +96,6 @@ class Api {
       return this.removeLike(_id);
     }
   }
-
-
 }
 
 const api = new Api({

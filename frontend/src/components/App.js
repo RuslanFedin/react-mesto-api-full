@@ -37,9 +37,17 @@ function App() {
   useEffect(() => {
     if (loggedIn) {
 
+      api.getUserInfo()
+      .then((data) => {
+        setCurrentUser(data.user);
+      })
+      .catch((error) => {
+        console.log(`ERROR: ${error}`);
+      });
+
       api.getCards()
       .then(({card: cards}) => {
-        setCards(cards.map((card) =>({ ...card, key: card._id })));
+        setCards(cards.map((card) =>({...card, key: card._id})).reverse());
       })
       .catch((error) => {
         console.log(`ERROR: ${error}`);
@@ -57,7 +65,7 @@ function App() {
 
   function handleUpdateUser(userData) {
     api.editUserInfo(userData)
-      .then((user) => {
+      .then(({user}) => {
         setCurrentUser(user)
         closeAllPopups(setIsEditProfilePopupOpen)
       })
@@ -100,7 +108,7 @@ function App() {
 
   function handleAddPlaceSubmit(newCardData) {
     api.createCard(newCardData)
-      .then((card) => {
+      .then(({card}) => {
         setCards([card, ...cards])
         closeAllPopups(setIsAddPlacePopupOpen)
       })
@@ -109,34 +117,33 @@ function App() {
       });
   }
 
-  function onLogin(email, password) {
+  function onLogin({email, password}) {
     auth.authorize(email, password)
     .then((res) => {
-      if (res.token) {
-        localStorage.setItem('token', res.token);
-        setLoggedIn(true);
-        setEmail(email);
-        history.push('/');
-      }
+      localStorage.setItem('token', res.token);
+      setLoggedIn(true);
+      setEmail(email);
+      history.push('/');
     })
     .catch ((error) => {
       console.log(`ERROR: ${error}`);
     })
   }
 
-  function onRegister(email, password) {
+  function onRegister({email, password}) {
     auth.register(email, password)
     .then((res) => {
-      if (res) {
-        setIsInfoTooltipPopupOpen(true);
-        setMessage('Вы успешно зарегестрировались!');
-        setImage(union);
-        history.push('/signin');
-      } else {
+      if (!res) {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Что-то пошло не так! Попробуйте еще раз.');
         setImage(unionError);
+        return;
       }
+
+      setIsInfoTooltipPopupOpen(true);
+      setMessage('Вы успешно зарегестрировались!');
+      setImage(union);
+      history.push('/signin');
     })
     .catch((error) => {
       console.log(`ERROR: ${error}`);
@@ -144,31 +151,28 @@ function App() {
   }
 
   function handleSignOut() {
-    localStorage.removeItem('token');
-    setEmail('');
-    history.push('/signin');
+    setEmail(null);
     setLoggedIn(false);
+    history.push('/signin');
+    localStorage.removeItem('token');
   }
 
   function checkToken() {
     const token = localStorage.getItem('token');
-
-    if (token || !loggedIn) return;
-
-    auth.getContent(token)
-    .then((res) => {
-      if (res) {
-        const email = res.user.email;
-        setLoggedIn(true);
-        setCurrentUser(res.user);
-        setEmail(email);
-      }
-      history.push('/')
-    })
-    .catch ((error) => {
-      console.log(`ERROR: ${error}`);
-    })
-  }
+    if (token) {
+      auth.getContent(token)
+      .then((res) => {
+        if (res){
+          const email = res.user.email;
+          setLoggedIn(true);
+          setEmail(email);
+          setCurrentUser(res.user);
+          }
+          history.push('/')
+      })
+      .catch ((err) => console.log(err));
+    }
+}
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
