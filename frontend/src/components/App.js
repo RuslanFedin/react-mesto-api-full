@@ -38,14 +38,8 @@ function App() {
     if (loggedIn) {
 
       api.getCards()
-      .then((cardData) => {
-        setCards(cardData.map((card) =>({
-          _id: card._id,
-          link: card.link,
-          name: card.name,
-          likes: card.likes,
-          owner: card.owner,
-        })));
+      .then(({card: cards}) => {
+        setCards(cards.map((card) =>({ ...card, key: card._id })));
       })
       .catch((error) => {
         console.log(`ERROR: ${error}`);
@@ -63,8 +57,8 @@ function App() {
 
   function handleUpdateUser(userData) {
     api.editUserInfo(userData)
-      .then((userData) => {
-        setCurrentUser(userData)
+      .then((user) => {
+        setCurrentUser(user)
         closeAllPopups(setIsEditProfilePopupOpen)
       })
       .catch((error) => {
@@ -84,7 +78,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((_id) => _id === currentUser._id);
     api.changeCardLike(card._id, !isLiked)
     .then(({card: newCard}) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
@@ -106,8 +100,8 @@ function App() {
 
   function handleAddPlaceSubmit(newCardData) {
     api.createCard(newCardData)
-      .then((newCard) => {
-        setCards([newCard, ...cards])
+      .then((card) => {
+        setCards([card, ...cards])
         closeAllPopups(setIsAddPlacePopupOpen)
       })
       .catch((error) => {
@@ -134,12 +128,10 @@ function App() {
     auth.register(email, password)
     .then((res) => {
       if (res) {
-        console.log(res);
         setIsInfoTooltipPopupOpen(true);
         setMessage('Вы успешно зарегестрировались!');
         setImage(union);
-        // history.push('/signin');
-        onLogin(email, password);
+        history.push('/signin');
       } else {
         setIsInfoTooltipPopupOpen(true);
         setMessage('Что-то пошло не так! Попробуйте еще раз.');
@@ -166,9 +158,9 @@ function App() {
     auth.getContent(token)
     .then((res) => {
       if (res) {
-        const email = res.user.email
-        setCurrentUser(res.user);
+        const email = res.user.email;
         setLoggedIn(true);
+        setCurrentUser(res.user);
         setEmail(email);
       }
       history.push('/')
