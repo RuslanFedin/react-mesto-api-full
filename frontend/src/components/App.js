@@ -31,12 +31,27 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    checkToken()
-  }, []);
+    const token = localStorage.getItem('token')
+    if (!token) { return }
+
+    if (token) {
+      auth.getContent(token)
+        .then(res => {
+          if(res) {
+            setLoggedIn(true)
+            setEmail(res.email)
+            history.push('/')
+          }
+        })
+        .catch(error => {
+          console.log(`ERROR: ${error}`);
+        })
+    }
+    return;
+  }, [loggedIn, history])
 
   useEffect(() => {
     if (loggedIn) {
-
       api.getUserInfo()
       .then((data) => {
         setCurrentUser(data.user);
@@ -54,6 +69,26 @@ function App() {
       });
     }
   }, [loggedIn]);
+
+  function onLogin({email, password}) {
+    auth.authorize(email, password)
+    .then((res) => {
+      localStorage.setItem('token', res.token);
+      setLoggedIn(true);
+      setEmail(email);
+      history.push('/');
+    })
+    .catch ((error) => {
+      console.log(`ERROR: ${error}`);
+    })
+  }
+
+  function handleSignOut() {
+    localStorage.removeItem('token');
+    setEmail('');
+    setLoggedIn(false);
+    history.push('/signin');
+  }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -117,19 +152,6 @@ function App() {
       });
   }
 
-  function onLogin({email, password}) {
-    auth.authorize(email, password)
-    .then((res) => {
-      localStorage.setItem('token', res.token);
-      setLoggedIn(true);
-      setEmail(email);
-      history.push('/');
-    })
-    .catch ((error) => {
-      console.log(`ERROR: ${error}`);
-    })
-  }
-
   function onRegister({email, password}) {
     auth.register(email, password)
     .then((res) => {
@@ -139,7 +161,6 @@ function App() {
         setImage(unionError);
         return;
       }
-
       setIsInfoTooltipPopupOpen(true);
       setMessage('Вы успешно зарегестрировались!');
       setImage(union);
@@ -149,30 +170,6 @@ function App() {
       console.log(`ERROR: ${error}`);
     });
   }
-
-  function handleSignOut() {
-    setEmail(null);
-    setLoggedIn(false);
-    history.push('/signin');
-    localStorage.removeItem('token');
-  }
-
-  function checkToken() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      auth.getContent(token)
-      .then((res) => {
-        if (res){
-          const email = res.user.email;
-          setLoggedIn(true);
-          setEmail(email);
-          setCurrentUser(res.user);
-          }
-          history.push('/')
-      })
-      .catch ((err) => console.log(err));
-    }
-}
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

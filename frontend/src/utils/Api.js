@@ -1,7 +1,5 @@
 import { data } from "autoprefixer";
 
-const token = localStorage.getItem('token');
-
 class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
@@ -16,7 +14,11 @@ class Api {
   // Загрузка информации о пользователе с сервера
   getUserInfo() {
     return fetch(`${this.baseUrl}/users/me`, {
-      headers: this.headers
+      method: 'GET',
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
     })
     .then(this._handleResponse);
   }
@@ -24,7 +26,11 @@ class Api {
   // Загрузка карточек с сервера
   getCards() {
     return fetch(`${this.baseUrl}/cards`,{
-      headers: this.headers
+      method: 'GET',
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
     })
     .then(this._handleResponse);
   }
@@ -33,8 +39,14 @@ class Api {
   editUserInfo(data) {
     return fetch(`${this.baseUrl}/users/me`,{
       method: 'PATCH',
-      headers: this.headers,
-      body: JSON.stringify(data),
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        name: data.name,
+        about: data.about
+      })
     })
     .then(this._handleResponse);
   }
@@ -43,8 +55,14 @@ class Api {
     createCard(data) {
       return fetch(`${this.baseUrl}/cards`,{
         method: 'POST',
-        headers: this.headers,
-        body: JSON.stringify(data),
+        headers: {
+          ...this.headers,
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          name: data.name,
+          link: data.link
+        })
       })
       .then(this._handleResponse);
     }
@@ -53,8 +71,13 @@ class Api {
   editUserAvatar(data) {
     return fetch(`${this.baseUrl}/users/me/avatar`,{
       method: 'PATCH',
-      headers: this.headers,
-      body: JSON.stringify(data),
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        avatar: data.avatar
+      }),
     })
     .then(this._handleResponse);
   }
@@ -64,7 +87,10 @@ class Api {
     const cardId = _id;
     return fetch(`${this.baseUrl}/cards/${cardId}`,{
       method: 'DELETE',
-      headers: this.headers,
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
     })
     .then(this._handleResponse);
   }
@@ -74,7 +100,10 @@ class Api {
     const cardId = _id;
     return fetch(`${this.baseUrl}/cards/${cardId}/likes`,{
       method: 'PUT',
-      headers: this.headers,
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
     })
     .then(this._handleResponse);
   }
@@ -84,7 +113,10 @@ class Api {
     const cardId = _id;
     return fetch(`${this.baseUrl}/cards/${cardId}/likes`,{
       method: 'DELETE',
-      headers: this.headers,
+      headers: {
+        ...this.headers,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
     })
     .then(this._handleResponse);
   }
@@ -101,7 +133,7 @@ class Api {
 const api = new Api({
   baseUrl: 'https://mestobknd.nomoredomains.sbs',
   headers: {
-    authorization: `Bearer ${token}`,
+    authorization: `Bearer ${localStorage.getItem('token')}`,
     'Content-Type': 'application/json'
 }
 });

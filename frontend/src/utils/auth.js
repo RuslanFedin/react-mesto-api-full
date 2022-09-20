@@ -30,13 +30,12 @@ export const authorize = (email, password) => {
     credentials: 'include',
     body: JSON.stringify({email, password})
   })
-
   .then((res) => {
     if (res.status === 200) {
       return res.json();
     }
+    console.log (res.json, 'resJson');
   })
-
 };
 
 export const getContent = (token) => {
@@ -45,7 +44,7 @@ export const getContent = (token) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'authorization': `Bearer ${token}`,
     }
   })
   .then((res) => {
